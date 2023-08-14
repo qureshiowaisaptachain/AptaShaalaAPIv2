@@ -1,9 +1,9 @@
-class errorResolver extends Error {
-    constructor(error, statusCode ) {
-        super(error);
+class ErrorResolver extends Error {
+    constructor(message, statusCode ) {
+        super(message);
         this.statusCode=statusCode;
        
     }
 }
 
-module.exports = errorResolver;
+module.exports = ErrorResolver;

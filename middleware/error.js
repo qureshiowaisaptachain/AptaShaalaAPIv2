@@ -1,8 +1,8 @@
-const errorHandler = (error, req, res, next) => {
-    console.log(error);
-    res.status(error.statusCode || 500).json({
-        success: false,
-        msg: err.message || 'Undefined Error'
+const errorHandler = (err, req, res, next) => {
+    console.log(err);
+    res.status(err.statusCode || 500).json({
+        status: false,
+        message: err.message || 'Undefined Error!'
     });
 };
 
