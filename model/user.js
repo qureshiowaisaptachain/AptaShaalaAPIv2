@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
     required: [true],
     minlength: [4],
     select: false,
-  },
+  }
 });
 const user = mongoose.model('User', userSchema);
 module.exports = user;

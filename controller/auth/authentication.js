@@ -1,7 +1,7 @@
 const user = require('../../model/user');
 const ErrorResolver = require('../../utility/errorResolver');
 
-exports.singIn = async (req, res, next) => {
+exports.signIn = async (req, res, next) => {
   try {
     const { email_id, password } = req.body;
     if (!email_id) {
@@ -23,3 +23,4 @@ exports.singIn = async (req, res, next) => {
     next(err);
   }
 };
+
