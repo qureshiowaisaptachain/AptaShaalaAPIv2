@@ -1,8 +1,12 @@
+// model is only for validation of data sent to mongodb
 const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
   email: {
     type: String,
+    lowercase: true, // Convert email to lowercase
+    trim: true,
     unique: true,
+    required: true,
   },
   password: {
     type: String,
@@ -11,5 +15,6 @@ const userSchema = mongoose.Schema({
     select: false,
   }
 });
+
 const user = mongoose.model('User', userSchema);
 module.exports = user;
