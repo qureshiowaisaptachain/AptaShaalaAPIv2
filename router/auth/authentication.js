@@ -6,6 +6,8 @@ const router = express.Router();
 router.post('/login', login);
 router.post('/register', register);
 
-router.post('/deletequestion',protect,authorize('organization,DeleteQuestions'),example)
+router.post('/deletequestion',protect,authorize('organization'),example)
+
 
 module.exports = router;
+

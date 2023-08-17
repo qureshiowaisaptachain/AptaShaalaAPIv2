@@ -6,7 +6,6 @@ const roles = {
 const jwt = require('jsonwebtoken');
 const ErrorResolver = require('../utility/errorResolver');
 const user = require('../model/user');
-const asyncHandler = require('./asynHandler');
 
 exports.protect = async (req, res, next) => {
   let token;
@@ -56,10 +55,14 @@ exports.authorize = (...permission) => {
       accountpermission.push(roles[role]);
     });
 
-    if (accountpermission.includes(permission)) {
-      next();
-    } else {
-      next(new ErrorResolver('role does not have permission', 401));
-    }
+    accountpermission.forEach((account) => {
+      permission.forEach((per) => {
+        if (account.includes(per)) {
+          next();
+        } else {
+          next(new ErrorResolver('role does not have permission', 401));
+        }
+      });
+    });
   };
 };

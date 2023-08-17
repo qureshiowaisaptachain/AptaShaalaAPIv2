@@ -4,11 +4,17 @@ var connectDB = require('./utility/connectDB');
 var PORT = Number(process.env.PORT) || 3000;
 var authentication = require('./router/auth/authentication');
 var errorHandler = require('./middleware/error');
+var cors = require('cors')
 require('dotenv').config();
 
 console.log('Connecting DB...');
 connectDB(process.env.MONGODB_URI);
-
+app.use(
+  cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  })
+);
 app.use(express.json());
 app.use('/api/authentication', authentication);
 app.use(errorHandler);
