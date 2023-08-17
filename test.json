@@ -1,0 +1,5 @@
+{
+  "email_id": "test1211@gmail.com",
+  "password": "test121",
+  "superAdmin": ["organization", "user", "question", "questionPaper"]
+}

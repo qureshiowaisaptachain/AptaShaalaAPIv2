@@ -13,6 +13,9 @@ const userSchema = mongoose.Schema({
     required: [true],
     minlength: [4],
     select: false,
+  },
+  roles:{
+    type:[String]
   }
 });
 

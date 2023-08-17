@@ -1,8 +1,11 @@
 const express = require('express');
-const { login, register } = require('../../controller/auth/authentication');
+const { login, register,example } = require('../../controller/auth/authentication');
+const {protect,authorize} = require('../../middleware/authorization')
 
 const router = express.Router();
 router.post('/login', login);
 router.post('/register', register);
+
+router.post('/deletequestion',protect,authorize('organization,DeleteQuestions'),example)
 
 module.exports = router;

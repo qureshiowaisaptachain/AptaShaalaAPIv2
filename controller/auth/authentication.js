@@ -37,7 +37,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.register = asyncHandler(async (req, res, next) => {
-  const { email_id, password } = req.body;
+  const { email_id, password,roles } = req.body;
   if (!email_id) {
     throw new ErrorResolver('email id missing', 400);
   } else if (!password) {
@@ -46,9 +46,11 @@ exports.register = asyncHandler(async (req, res, next) => {
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+  
   const account = await user.create({
     email: email_id,
     password: hashedPassword,
+    roles:roles
   });
 
   if (!account) {
@@ -60,4 +62,9 @@ exports.register = asyncHandler(async (req, res, next) => {
     success: true,
     token: token,
   });
+});
+
+
+exports.example = asyncHandler(async (req, res, next) => {
+   res.status(200).json({'message':'access granted'}) 
 });
