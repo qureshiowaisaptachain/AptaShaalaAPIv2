@@ -15,6 +15,7 @@ app.use(
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   })
 );
+
 app.use(express.json());
 app.use('/api/authentication', authentication);
 app.use(errorHandler);

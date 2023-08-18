@@ -1,3 +1,4 @@
+// pemmission from db and populate them in this roles object 
 const roles = {
   superAdmin: ['organization', 'student', 'question', 'questionPaper'],
   questionCreator: ['question', 'student'],
