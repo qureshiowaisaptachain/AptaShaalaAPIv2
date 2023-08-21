@@ -102,9 +102,8 @@ exports.get_otp = asyncHandler(async (req, res, next) => {
   }
 
   const OTP = parseInt(Math.random() * 10000);
-  await RedisClient.set(email_id, OTP);
-  const value = await RedisClient.get(email_id);
-  console.log(email_id, value);
+  await RedisClient.setex(email_id,900,OTP);
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
