@@ -38,7 +38,12 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   const token = createToken(account);
-  res.status(200).json({ succsess: true, token,statusCode:200,message:"User Login Succsessfully" });
+  res.status(200).json({
+    succsess: true,
+    token,
+    statusCode: 200,
+    message: 'User Login Succsessfully',
+  });
 });
 
 exports.register = asyncHandler(async (req, res, next) => {
@@ -196,5 +201,45 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
     success: true,
     message: 'password updated',
     statusCode: 200,
+  });
+});
+
+exports.loginwithotp = asyncHandler(async (req, res, next) => {
+  const { email_id, otpAccessToken } = req.body;
+  if (!email_id || !otpAccessToken) {
+    throw new ErrorResolver('Required Argument Missing', 400);
+  }
+
+  const decodeResetToken = jwt.verify(
+    otpAccessToken,
+    process.env.RESET_JWT_SECRET
+  );
+
+  if (!decodeResetToken.isValidated) {
+    throw ErrorResolver('Credential Incorrect', 403);
+  }
+
+  const account = await user.findOne({
+    email: email_id,
+  });
+
+  if (!account) {
+    throw new ErrorResolver('Token Expired or Account Does Not Exist', 403);
+  }
+
+  const tokeAccount = await user.findOne({
+    _id: decodeResetToken.id,
+  });
+
+  if (!(account.email == tokeAccount.email)) {
+    throw ErrorResolver('Credential Incorrect', 403);
+  }
+
+  const token = createToken(account);
+  res.status(200).json({
+    succsess: true,
+    token,
+    statusCode: 200,
+    message: 'User Login Succsessfully',
   });
 });
