@@ -12,7 +12,6 @@ const bcrypt = require('bcryptjs');
 const { createToken } = require('../../utility/helper');
 const Redis = require('ioredis');
 const RedisClient = new Redis(process.env.REDIS_URI);
-const jwt = require('jsonwebtoken');
 
 exports.login = asyncHandler(async (req, res, next) => {
   const { email_id, password } = req.body;
@@ -102,7 +101,7 @@ exports.get_otp = asyncHandler(async (req, res, next) => {
   }
 
   const OTP = parseInt(Math.random() * 10000);
-  await RedisClient.setex(email_id,900,OTP);
+  await RedisClient.setex(email_id, 900, OTP);
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -128,18 +127,16 @@ exports.get_otp = asyncHandler(async (req, res, next) => {
     } else {
       res
         .status(200)
-        .json({ succsess: true, message: 'OTP Send Via Email SuccessFully ' });
+        .json({ succsess: true,OTP, message: 'OTP Send Via Email SuccessFully ' });
     }
   });
 });
 
-exports.validate_otp = asyncHandler(async (req, res, next) => {
-  const { email_id, userEnterOTP } = req.body;
+exports.passwordReset = asyncHandler(async (req, res, next) => {
+  const { email_id, OTP, newPassword } = req.body;
 
-  if (!email_id) {
-    throw new ErrorResolver('Email id missing', 400);
-  } else if (!userEnterOTP) {
-    throw new ErrorResolver('OTP Is Missing', 400);
+  if (!email_id || !OTP || !newPassword) {
+    throw new ErrorResolver('Required Argument Missing', 401);
   }
 
   const account = await user.findOne({
@@ -152,72 +149,35 @@ exports.validate_otp = asyncHandler(async (req, res, next) => {
 
   const otpMappedToEmail = await RedisClient.get(email_id);
 
-  if (parseInt(otpMappedToEmail) === parseInt(userEnterOTP)) {
-    token = jwt.sign(
-      { id: account._id, isValidated: true },
-      process.env.RESET_JWT_SECRET,
-      {
-        expiresIn: process.env.RESET_JWT_EXPIRE,
-      }
-    );
-    res.status(200).json({
-      statusCode: 200,
-      succsess: true,
-      message: 'User Is Validated',
-      passwordResetToken: token,
-    });
-  } else {
+  if (!(parseInt(otpMappedToEmail) === parseInt(OTP))) {
     throw new ErrorResolver('Incorrect OTP', 300);
   }
-});
 
-// get otp - >   1245 -> validat -> send reset token with 15m or allow loing
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-exports.passwordReset = asyncHandler(async (req, res, next) => {
-  const { passwordResetToken, newPassword } = req.body;
-  const decodeResetToken = jwt.verify(
-    passwordResetToken,
-    process.env.RESET_JWT_SECRET
+  const filter = { email: email_id };
+  var updatePassword = await user.findOneAndUpdate(
+    filter,
+    { password: hashedPassword },
+    { new: true }
   );
 
-  if (decodeResetToken.isValidated) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-    const filter = { _id: decodeResetToken.id };
-    var account = await user.findOneAndUpdate(
-      filter,
-      { password: hashedPassword },
-      { new: true }
-    );
-  }
-
-  if (!account) {
-    throw new ErrorResolver('User Password Is Not Updated', 400);
+  if (!updatePassword) {
+    throw new ErrorResolver('Password Update Failed', 403);
   }
 
   res.status(200).json({
-    success: true,
-    message: 'password updated',
     statusCode: 200,
+    succsess: true,
+    message: 'Password is updated'
   });
+
 });
 
 exports.loginwithotp = asyncHandler(async (req, res, next) => {
-  const { email_id, otpAccessToken } = req.body;
-  if (!email_id || !otpAccessToken) {
-    throw new ErrorResolver('Required Argument Missing', 400);
-  }
-
-  const decodeResetToken = jwt.verify(
-    otpAccessToken,
-    process.env.RESET_JWT_SECRET
-  );
-
-  if (!decodeResetToken.isValidated) {
-    throw ErrorResolver('Credential Incorrect', 403);
-  }
-
+  const { email_id, otp } = req.body;
+  
   const account = await user.findOne({
     email: email_id,
   });
@@ -226,18 +186,16 @@ exports.loginwithotp = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Token Expired or Account Does Not Exist', 403);
   }
 
-  const tokeAccount = await user.findOne({
-    _id: decodeResetToken.id,
-  });
+  const otpMappedToEmail = await RedisClient.get(email_id);
 
-  if (!(account.email == tokeAccount.email)) {
-    throw ErrorResolver('Credential Incorrect', 403);
+  if (!(parseInt(otpMappedToEmail) === parseInt(otp))) {
+    throw new ErrorResolver('Incorrect OTP', 300);
   }
 
   const token = createToken(account);
   res.status(200).json({
     succsess: true,
-    token,
+    login: token,
     statusCode: 200,
     message: 'User Login Succsessfully',
   });
