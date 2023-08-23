@@ -3,8 +3,9 @@ var app = express();
 var connectDB = require('./utility/connectDB');
 var PORT = Number(process.env.PORT) || 3000;
 var authentication = require('./router/auth/authentication');
+var question = require('./router/question');
 var errorHandler = require('./middleware/error');
-var cors = require('cors')
+var cors = require('cors');
 require('dotenv').config();
 
 console.log('Connecting DB...');
@@ -18,6 +19,7 @@ app.use(
 
 app.use(express.json());
 app.use('/api/authentication', authentication);
+app.use('/api/question', question);
 app.use(errorHandler);
 
 app.listen(PORT, function () {
