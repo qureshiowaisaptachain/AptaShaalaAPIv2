@@ -32,7 +32,7 @@ exports.protect = async (req, res, next) => {
     throw new ErrorResolver(`Unauthorize Access`, 403);
   }
   let decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+  
   const account = await user.findById(decoded.id);
 
   if (account) {
@@ -41,7 +41,7 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!account) {
-    throw new ErrorResolver('User Not Found', 500);
+    throw new ErrorResolver('Unauthorize Access', 500);
   }
 };
 
@@ -56,10 +56,13 @@ exports.authorize = (permission) => {
     }
 
     if (!token) {
-      return next(new ErrorResolver(`Issue With Access Token`, 403));
+      return next(new ErrorResolver(`Unauthorize Access`, 403));
     }
 
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      return next(new ErrorResolver(`Unauthorize Access`, 403));
+    }
     let accountPermission = [];
 
     decoded.role.forEach((role) => {
@@ -70,7 +73,7 @@ exports.authorize = (permission) => {
       return next();
     }
     {
-      return next(new ErrorResolver('role does not have permission', 401));
+      return next(new ErrorResolver('Unauthorize Access', 401));
     }
   };
 };

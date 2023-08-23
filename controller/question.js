@@ -24,5 +24,19 @@ exports.addQuestion = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Question Not Added Try Again', 500);
   }
 
-  res.status(200).json({ message: 'New Question Added', newQuestions });
+  res
+    .status(200)
+    .json({ message: 'New Question Added', newQuestions, statusCode: '201' });
+});
+
+exports.getQuestion = asyncHandler(async (req, res, next) => {
+  const listQuestions = await Question.find({});
+
+  if (!listQuestions) {
+    throw new ErrorResolver('Question Not Added Try Again', 500);
+  }
+
+  res
+    .status(200)
+    .json({ message: 'Questions List', listQuestions, statusCode: '200' });
 });
