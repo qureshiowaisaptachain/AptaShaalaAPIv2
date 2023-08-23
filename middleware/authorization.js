@@ -1,12 +1,22 @@
-// pemmission from db and populate them in this roles object 
+// pemmission from db and populate them in this roles object
 const roles = {
-  superAdmin: ['organization', 'student', 'question', 'questionPaper'],
-  questionCreator: ['question', 'student'],
+  superAdmin: [
+    'ReadQuestion',
+    'CreateQuestion',
+    'UpdateQuestion',
+    'DeleteQuestion',
+  ],
+  questionCreator: [
+    'ReadQuestion',
+    'CreateQuestion',
+    'UpdateQuestion',
+    'DeleteQuestion',
+  ],
 };
 
 const jwt = require('jsonwebtoken');
 const ErrorResolver = require('../utility/errorResolver');
-const user = require('../model/user');
+const user = require('../model/auth/user');
 
 exports.protect = async (req, res, next) => {
   let token;
@@ -35,7 +45,7 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.authorize = (...permission) => {
+exports.authorize = (permission) => {
   return (req, res, next) => {
     var token = false;
     if (
@@ -46,24 +56,21 @@ exports.authorize = (...permission) => {
     }
 
     if (!token) {
-      next(new ErrorResolver(`Issue With Access Token`, 403));
+      return next(new ErrorResolver(`Issue With Access Token`, 403));
     }
 
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    let accountpermission = [];
+    let accountPermission = [];
 
     decoded.role.forEach((role) => {
-      accountpermission.push(roles[role]);
+      accountPermission.push(roles[role]);
     });
 
-    accountpermission.forEach((account) => {
-      permission.forEach((per) => {
-        if (account.includes(per)) {
-          next();
-        } else {
-          next(new ErrorResolver('role does not have permission', 401));
-        }
-      });
-    });
+    if (accountPermission[0].includes(permission[0])) {
+      return next();
+    }
+    {
+      return next(new ErrorResolver('role does not have permission', 401));
+    }
   };
 };

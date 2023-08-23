@@ -127,7 +127,11 @@ exports.get_otp = asyncHandler(async (req, res, next) => {
     } else {
       res
         .status(200)
-        .json({ succsess: true,OTP, message: 'OTP Send Via Email SuccessFully ' });
+        .json({
+          succsess: true,
+          OTP,
+          message: 'OTP Send Via Email SuccessFully ',
+        });
     }
   });
 });
@@ -170,14 +174,13 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     statusCode: 200,
     succsess: true,
-    message: 'Password is updated'
+    message: 'Password is updated',
   });
-
 });
 
 exports.loginwithotp = asyncHandler(async (req, res, next) => {
   const { email_id, otp } = req.body;
-  
+
   const account = await user.findOne({
     email: email_id,
   });

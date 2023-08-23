@@ -1,5 +1,5 @@
-import Role, { create } from '../model/auth/roles';
-import connectDB from '../utility/connectDB';
+const Role = require('../model/auth/roles');
+const connectDB = require('../utility/connectDB');
 require('dotenv').config();
 
 const allRoles = [];
@@ -7,8 +7,11 @@ const allRoles = [];
 const superAdmin = new Role({
   name: 'superAdmin',
   permissions: [
-    'Admin',
-    'RoleEditor'
+    'ReadQustion',
+    'ReadQuestionPaper',
+    'CreateQuestionPaper',
+    'UpdateQuestionPaper',
+    'DeleteQuestionPaper',
   ],
 });
 
@@ -25,16 +28,16 @@ const questionCreator = new Role({
 
 const questionApprover = new Role({
   name: 'questionApprover',
-  permissions: ['ReadQustion','UpdateQuestion'],
+  permissions: ['ReadQustion', 'UpdateQuestion'],
 });
 
 allRoles.push(superAdmin);
 allRoles.push(questionCreator);
 allRoles.push(questionApprover);
 
-await connectDB(process.env.MONGODB_URI);
+connectDB(process.env.MONGODB_URI);
 
 allRoles.forEach((role) => {
-  const results = create(role);
+  const results = Role.create(role);
   console.log(results);
 });
