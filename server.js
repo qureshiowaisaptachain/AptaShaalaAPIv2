@@ -4,6 +4,8 @@ var connectDB = require('./utility/connectDB');
 var PORT = Number(process.env.PORT) || 3000;
 var authentication = require('./router/auth/authentication');
 var question = require('./router/question');
+// var organization = require('./router/organization');
+var course = require('./router/course');
 var errorHandler = require('./middleware/error');
 var cors = require('cors');
 require('dotenv').config();
@@ -25,7 +27,8 @@ app.use((req,res,next)=>{
 })
 app.use('/api/authentication', authentication);
 app.use('/api/question', question);
-
+// app.use('/api/organization', organization);
+app.use('/api/course',course);
 app.use(errorHandler);
 
 app.listen(PORT, function () {
