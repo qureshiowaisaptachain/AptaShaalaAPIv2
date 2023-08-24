@@ -5,7 +5,7 @@ const questionSchema = mongoose.Schema({
     type: String,
     lowercase: true,
     trim: true,
-    unique: true,
+    unique: false,
     required: true,
   },
   answer: {
@@ -15,9 +15,11 @@ const questionSchema = mongoose.Schema({
   },
   options: {
     type: [String],
+    required: [true],
   },
   difficulty: {
     type: Number,
+    required: [true],
     enum: [0, 1, 2],
     validate: {
       validator: function (value) {
@@ -30,15 +32,19 @@ const questionSchema = mongoose.Schema({
     type: String,
     lowercase: true,
     trim: true,
+    required: [true],
   },
   topic: {
     type: [String],
+    required: [true],
   },
   hint: {
     type: String,
+    required: [true],
   },
-  create_data: {
+  create_date: {
     type: String,
+    required: [true],
   },
 });
 
