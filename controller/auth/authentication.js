@@ -125,13 +125,11 @@ exports.get_otp = asyncHandler(async (req, res, next) => {
     if (error) {
       next(new ErrorResolver(error.message, 300));
     } else {
-      res
-        .status(200)
-        .json({
-          succsess: true,
-          OTP,
-          message: 'OTP Send Via Email SuccessFully ',
-        });
+      res.status(200).json({
+        succsess: true,
+        OTP,
+        message: 'OTP Send Via Email SuccessFully ',
+      });
     }
   });
 });
@@ -148,13 +146,13 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
   });
 
   if (!account) {
-    throw new ErrorResolver('Account Does Not Exist', 403);
+    throw new ErrorResolver('Account Does Not Exist', 401);
   }
 
   const otpMappedToEmail = await RedisClient.get(email_id);
 
   if (!(parseInt(otpMappedToEmail) === parseInt(OTP))) {
-    throw new ErrorResolver('Incorrect OTP', 300);
+    throw new ErrorResolver('Incorrect OTP or OTP Expired', 401);
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -168,7 +166,9 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
   );
 
   if (!updatePassword) {
-    throw new ErrorResolver('Password Update Failed', 403);
+    throw new ErrorResolver('Password Update Failed', 500);
+  } else {
+    await RedisClient.set(email_id, null);
   }
 
   res.status(200).json({
