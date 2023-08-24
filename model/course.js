@@ -3,12 +3,8 @@ const mongoose = require('mongoose');
 const courseSchema = mongoose.Schema({
   course: {
     type: String,
-    lowercase: true,
-    trim: true,
-    unique: false,
-    required: true,
   },
-  test_details: [
+  types_of_tests: [
     {
       test_test: { type: String },
       no_of_questions: { type: String },
