@@ -36,7 +36,10 @@ const userSchema = mongoose.Schema({
   phonenumber: {
     type: String,
   },
+  subject_specialization:{
+   type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Subjects' }]
+  }
 });
 
-const user = mongoose.model('User', userSchema);
+const user = mongoose.model('super_org_user', userSchema);
 module.exports = user;

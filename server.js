@@ -6,8 +6,10 @@ var authentication = require('./router/auth/authentication');
 var question = require('./router/question');
 // var organization = require('./router/organization');
 var course = require('./router/course');
+var subject = require('./router/subject');
 var errorHandler = require('./middleware/error');
 var cors = require('cors');
+const { getSubjects } = require('./controller/subject');
 require('dotenv').config();
 
 console.log('Connecting DB...');
@@ -29,6 +31,7 @@ app.use('/api/authentication', authentication);
 app.use('/api/question', question);
 // app.use('/api/organization', organization);
 app.use('/api/course',course);
+app.use('/api/subject',subject)
 app.use(errorHandler);
 
 app.listen(PORT, function () {
