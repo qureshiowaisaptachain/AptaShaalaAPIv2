@@ -54,6 +54,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     firstname,
     gender,
     phonenumber,
+    subject_specialization
   } = req.body;
   if (!email_id) {
     throw new ErrorResolver('email id missing', 400);
@@ -72,6 +73,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     firstname: firstname,
     gender: gender,
     phonenumber: phonenumber,
+    subject_specialization:subject_specialization
   });
 
   if (!account) {

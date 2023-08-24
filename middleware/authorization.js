@@ -5,6 +5,8 @@ const roles = {
     'CreateQuestion',
     'UpdateQuestion',
     'DeleteQuestion',
+    'CreateCourse',
+    'getSubject',
   ],
   questionCreator: [
     'ReadQuestion',
@@ -32,7 +34,7 @@ exports.protect = async (req, res, next) => {
     throw new ErrorResolver(`Unauthorize Access`, 403);
   }
   let decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
+
   const account = await user.findById(decoded.id);
 
   if (account) {
@@ -70,9 +72,9 @@ exports.authorize = (permission) => {
     });
 
     if (accountPermission[0].includes(permission[0])) {
+      req.userID = decoded.id;
       return next();
-    }
-    {
+    } else {
       return next(new ErrorResolver('Unauthorize Access', 401));
     }
   };

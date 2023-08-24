@@ -10,6 +10,9 @@ const organizationSchema = mongoose.Schema({
     unique: true,
     required: true,
   },
+  domain: {
+    type: String,
+  },
   name: {
     type: String,
     lowercase: true,
@@ -28,7 +31,7 @@ const organizationSchema = mongoose.Schema({
   },
   email: {
     type: String,
-  }
+  },
 });
 
-module.exports 
+module.exports = mongoose.model(`Organization`, organizationSchema);
