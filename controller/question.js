@@ -23,7 +23,7 @@ exports.getQuestion = asyncHandler(async (req, res, next) => {
   const listQuestions = await Question.find({});
 
   if (!listQuestions) {
-    throw new ErrorResolver('Question Not Added Try Again', 500);
+    throw new ErrorResolver('Cant Find Questions List', 500);
   }
 
   res
