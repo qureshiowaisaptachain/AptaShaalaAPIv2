@@ -18,8 +18,14 @@ app.use(
 );
 
 app.use(express.json());
+app.use((req,res,next)=>{
+  req.header
+  console.log('Request headers:', req.headers);
+    next();
+})
 app.use('/api/authentication', authentication);
 app.use('/api/question', question);
+
 app.use(errorHandler);
 
 app.listen(PORT, function () {
