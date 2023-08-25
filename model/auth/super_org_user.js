@@ -37,7 +37,7 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   subject_specialization:{
-   type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Subjects' }]
+   type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }]
   }
 });
 
