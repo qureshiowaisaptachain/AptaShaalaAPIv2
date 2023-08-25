@@ -7,6 +7,8 @@ const ErrorResolver = require('../utility/errorResolver');
 // errorhandling  each case
 // add more detail to Questions model as per need
 exports.addQuestion = asyncHandler(async (req, res, next) => {
+  req.body['created_by'] = req.userID;
+  req.body['approved_by']=req.userID;// place holder data only
   const newQuestions = await Question.create(req.body);
 
   if (!newQuestions) {

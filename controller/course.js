@@ -1,7 +1,6 @@
 const asyncHandler = require('../middleware/asynHandler');
-const Course = require('../model/course'); // Update the import based on your model
+const Course = require('../model/course');
 const ErrorResolver = require('../utility/errorResolver');
-
 
 exports.getCourses = asyncHandler(async (req, res, next) => {
   const courses = await Course.find({});

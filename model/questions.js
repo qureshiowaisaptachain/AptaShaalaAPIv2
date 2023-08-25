@@ -25,13 +25,14 @@ const questionSchema = mongoose.Schema({
     required: true,
   },
   create_date: {
-    type: Date,
+    type: Date.now,
     required: true,
   },
-  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'super_org_user'},
-  approved_by: { type: mongoose.Schema.Types.ObjectId, ref: 'super_org_user'},
-  approved_date: { type: Date },
+  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'super_org_user' },
+  approved_by: { type: mongoose.Schema.Types.ObjectId, ref: 'super_org_user' },
+  approved_date: { type: Date.now },
 });
 
+// above approve date is and approve by data is placeholder
 const Question = mongoose.model('Question', questionSchema);
 module.exports = Question;
