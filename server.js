@@ -31,7 +31,8 @@ app.use('/api/authentication', authentication);
 app.use('/api/question', question);
 // app.use('/api/organization', organization);
 app.use('/api/course',course);
-app.use('/api/subject',subject)
+app.use('/api/subject',subject);
+app.use('/notForProduction',authentication)
 app.use(errorHandler);
 
 app.listen(PORT, function () {

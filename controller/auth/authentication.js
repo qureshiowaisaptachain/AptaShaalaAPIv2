@@ -54,7 +54,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     firstname,
     gender,
     phonenumber,
-    subject_specialization
+    subject_specialization,
   } = req.body;
   if (!email_id) {
     throw new ErrorResolver('email id missing', 400);
@@ -73,7 +73,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     firstname: firstname,
     gender: gender,
     phonenumber: phonenumber,
-    subject_specialization:subject_specialization
+    subject_specialization: subject_specialization,
   });
 
   if (!account) {
@@ -143,7 +143,7 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Required Argument Missing', 401);
   }
 
-  const account = await user.findOne({
+  const account = await super_org_user.findOne({
     email: email_id,
   });
 
@@ -161,7 +161,7 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(newPassword, salt);
 
   const filter = { email: email_id };
-  var updatePassword = await user.findOneAndUpdate(
+  var updatePassword = await super_org_user.findOneAndUpdate(
     filter,
     { password: hashedPassword },
     { new: true }
@@ -183,7 +183,7 @@ exports.passwordReset = asyncHandler(async (req, res, next) => {
 exports.loginwithotp = asyncHandler(async (req, res, next) => {
   const { email_id, otp } = req.body;
 
-  const account = await user.findOne({
+  const account = await super_org_user.findOne({
     email: email_id,
   });
 
@@ -203,5 +203,41 @@ exports.loginwithotp = asyncHandler(async (req, res, next) => {
     login: token,
     statusCode: 200,
     message: 'User Login Succsessfully',
+  });
+});
+
+exports.passwordResetForDev = asyncHandler(async (req, res, next) => {
+  const { email_id, newPassword } = req.body;
+
+  if (!email_id || !newPassword) {
+    throw new ErrorResolver('Required Argument Missing', 401);
+  }
+
+  const account = await super_org_user.findOne({
+    email_id: email_id,
+  });
+
+  if (!account) {
+    throw new ErrorResolver('Account Does Not Exist', 401);
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+  const filter = { email_id: email_id };
+  var updatePassword = await super_org_user.findOneAndUpdate(
+    filter,
+    { password: hashedPassword },
+    { new: true }
+  );
+
+  if (!updatePassword) {
+    throw new ErrorResolver('Password Update Failed', 500);
+  }
+
+  res.status(200).json({
+    statusCode: 200,
+    succsess: true,
+    message: 'Password is updated',
   });
 });
