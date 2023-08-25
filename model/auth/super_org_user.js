@@ -1,5 +1,7 @@
 // model is only for validation of data sent to mongodb
 //genral model for all user and any tenent
+const subjectSchema = require('../subjects'); // Adjust the path as needed
+
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
