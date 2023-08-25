@@ -27,7 +27,10 @@ const questionSchema = mongoose.Schema({
   create_date: {
     type: Date,
     required: true,
-  }
+  },
+  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'super_org_user'},
+  approved_by: { type: mongoose.Schema.Types.ObjectId, ref: 'super_org_user'},
+  approved_date: { type: Date },
 });
 
 const Question = mongoose.model('Question', questionSchema);

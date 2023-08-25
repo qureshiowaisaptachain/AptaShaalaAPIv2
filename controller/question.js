@@ -7,7 +7,6 @@ const ErrorResolver = require('../utility/errorResolver');
 // errorhandling  each case
 // add more detail to Questions model as per need
 exports.addQuestion = asyncHandler(async (req, res, next) => {
-
   const newQuestions = await Question.create(req.body);
 
   if (!newQuestions) {
