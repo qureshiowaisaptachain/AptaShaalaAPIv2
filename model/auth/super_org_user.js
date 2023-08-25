@@ -41,5 +41,5 @@ const userSchema = mongoose.Schema({
   }
 });
 
-const user = mongoose.model('super_org_user', userSchema);
-module.exports = user;
+const super_org_user = mongoose.model('super_org_user', userSchema);
+module.exports = super_org_user;

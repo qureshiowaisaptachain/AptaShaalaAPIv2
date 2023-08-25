@@ -1,11 +1,11 @@
 const asyncHandler = require('../middleware/asynHandler');
 const {Subject} = require('../model/subjects');
-const User =require('../model/auth/user'); // Update the import based on your model
+const super_org_user =require('../model/auth/super_org_user'); // Update the import based on your model
 const ErrorResolver = require('../utility/errorResolver');
 
 exports.getSubjects = asyncHandler(async (req, res, next) => {
 
-  const user = await User.findById(req.userID);
+  const user = await super_org_user.findById(req.userID);
   
   if (!user) {
     throw new ErrorResolver("User not found", 404);

@@ -18,7 +18,7 @@ const roles = {
 
 const jwt = require('jsonwebtoken');
 const ErrorResolver = require('../utility/errorResolver');
-const user = require('../model/auth/user');
+const user = require('../model/auth/super_org_user');
 
 exports.protect = async (req, res, next) => {
   let token;

@@ -5,7 +5,7 @@
 */
 require('dotenv').config();
 const nodemailer = require('nodemailer');
-const user = require('../../model/auth/user');
+const super_org_user = require('../../model/auth/super_org_user');
 const ErrorResolver = require('../../utility/errorResolver');
 const asyncHandler = require('../../middleware/asynHandler');
 const bcrypt = require('bcryptjs');
@@ -20,7 +20,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   } else if (!password) {
     throw new ErrorResolver('Password missing', 400);
   }
-  const account = await user
+  const account = await super_org_user
     .findOne({
       email: email_id,
     })
@@ -65,7 +65,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const account = await user.create({
+  const account = await super_org_user.create({
     email: email_id,
     password: hashedPassword,
     roles: roles,
@@ -94,7 +94,7 @@ exports.get_otp = asyncHandler(async (req, res, next) => {
   if (!email_id) {
     throw new ErrorResolver('Email id missing', 400);
   }
-  const account = await user.findOne({
+  const account = await super_org_user.findOne({
     email: email_id,
   });
 
