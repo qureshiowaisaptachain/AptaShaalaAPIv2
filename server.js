@@ -32,7 +32,7 @@ app.use('/api/question', question);
 // app.use('/api/organization', organization);
 app.use('/api/course',course);
 app.use('/api/subject',subject);
-// remove below endpoint befor prouduction build
+// remove below endpoint before prouduction build
 app.use('/notForProduction',authentication);
 app.use(errorHandler);
 
