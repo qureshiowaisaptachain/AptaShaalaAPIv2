@@ -1,31 +1,25 @@
 const asyncHandler = require('../middleware/asynHandler');
-const {Subject} = require('../model/subjects');
 const super_org_user =require('../model/auth/super_org_user'); // Update the import based on your model
 const ErrorResolver = require('../utility/errorResolver');
 
 exports.getSubjects = asyncHandler(async (req, res, next) => {
 
-  const user = await super_org_user.findById(req.userID);
-  
-  if (!user) {
-    throw new ErrorResolver("User not found", 404);
-  }
-  console.log(user)
-  const subjectID = user.subject_specialization;
-
-  // Fetch subjects based on the subjectID and populate related data
-  const subjects = await Subject.find({ _id: subjectID })
+    // Fetch subjects based on the subjectID and populate related data
+    const user = await super_org_user.findById(req.userID)
     .populate({
-      path: 'chapters',
+      path: 'subject_specialization', // Path to the reference field in the user schema
       populate: {
-        path: 'topics',
-        model: 'Topic',
-      },
-    })
+        path: 'chapters', // Path to the reference field in the subject schema
+        populate: {
+          path: 'topics', // Path to the reference field in the chapter schema
+        }
+      }
+    }).select({subjec_specialization:1});
 
-  if (!subjects) {
-    throw new ErrorResolver("Can't Find Subjects List", 500);
-  }
+    if(!user){
+      throw new ErrorResolver("subject not found",404);
+    }
 
-  res.status(200).json({ message: 'Subjects List', subjects, statusCode: 200 });
+
+  res.status(200).json({ message: 'Subjects List', user});
 });

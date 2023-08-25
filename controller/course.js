@@ -10,5 +10,5 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver("Can't Find Courses List", 500);
   }
 
-  res.status(200).json({ message: 'Courses List', courses, statusCode: '200' });
+  res.status(200).json({ message: 'Courses List Successfully Retrived', courses });
 });
