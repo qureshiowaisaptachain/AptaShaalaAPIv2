@@ -19,6 +19,6 @@ const subjectSchema = mongoose.Schema({
   chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
 });
 
-const Subject = mongoose.model('Subject', subjectSchema);
+const Subject =  mongoose.model('Subject', subjectSchema);
 
 module.exports = { Subject, Chapter, Topic };
