@@ -1,14 +1,10 @@
 const asyncHandler = require('../middleware/asynHandler');
 const Question = require('../model/questions');
 const ErrorResolver = require('../utility/errorResolver');
-//todo and add this to task
-// validate req.body for null
-//validate data for false value
-// errorhandling  each case
-// add more detail to Questions model as per need
+
 exports.addQuestion = asyncHandler(async (req, res, next) => {
   req.body['created_by'] = req.userID;
-  req.body['approved_by']=req.userID;// place holder data only
+  req.body['approved_by'] = req.userID; // place holder data only
   const newQuestions = await Question.create(req.body);
 
   if (!newQuestions) {
@@ -21,13 +17,25 @@ exports.addQuestion = asyncHandler(async (req, res, next) => {
 });
 
 exports.getQuestion = asyncHandler(async (req, res, next) => {
-  const listQuestions = await Question.find({});
+  const questionID = req.params['id'];
+  var question;
+  // return all question if id is not available
+  if (!questionID) {
+    question = await Question.find({});
 
-  if (!listQuestions) {
-    throw new ErrorResolver('Cant Find Questions List', 500);
+    if (!question) {
+      throw new ErrorResolver('Cant Find Questions List', 404);
+    }
+    return res
+      .status(200)
+      .json({ message: 'Questions List', question, statusCode: '200' });
   }
 
+  question = await Question.find({ _id: questionID });
+  if (!question) {
+    throw new ErrorResolver('Cant Find Question ', 404);
+  }
   res
     .status(200)
-    .json({ message: 'Questions List', listQuestions, statusCode: '200' });
+    .json({ message: 'Questions List', question, statusCode: '200' });
 });
