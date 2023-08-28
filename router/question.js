@@ -1,5 +1,5 @@
 const express = require('express');
-const { addQuestion,getQuestion,updateQuestion,deleteQuestion } = require('../controller/question');
+const { addQuestion,getQuestion } = require('../controller/question');
 const { protect, authorize } = require('../middleware/authorization');
 
 // # Question Papers
@@ -11,5 +11,5 @@ const { protect, authorize } = require('../middleware/authorization');
 
 const router = express.Router();
 router.post('/', protect, authorize(['CreateQuestion']), addQuestion);
-router.get('/:id', protect, authorize(['ReadQuestion']), getQuestion);
+router.get('/', protect, authorize(['ReadQuestion']), getQuestion);
 module.exports = router;
