@@ -11,5 +11,6 @@ const { protect, authorize } = require('../middleware/authorization');
 
 const router = express.Router();
 router.post('/', protect, authorize(['CreateQuestion']), addQuestion);
+router.get('/:id', protect, authorize(['ReadQuestion']), getQuestion);
 router.get('/', protect, authorize(['ReadQuestion']), getQuestion);
 module.exports = router;
