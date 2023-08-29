@@ -18,7 +18,6 @@ exports.addQuestion = asyncHandler(async (req, res, next) => {
 
 exports.getQuestion = asyncHandler(async (req, res, next) => {
   const questionID = req.query['id'];
-  const paginationData = req.paginationData;
   var question;
   // return all question if id is not available
   if (!questionID) {
@@ -29,7 +28,6 @@ exports.getQuestion = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       message: 'Questions List',
       question,
-      paginationData,
       statusCode: '200',
     });
   }
@@ -41,7 +39,6 @@ exports.getQuestion = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     message: 'Questions List',
     question,
-    paginationData,
     statusCode: '200',
   });
 });
