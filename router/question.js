@@ -1,7 +1,12 @@
 const express = require('express');
-const { addQuestion,getQuestion } = require('../controller/question');
+const {
+  addQuestion,
+  getQuestion,
+  queryQuestion,
+} = require('../controller/question');
 const { protect, authorize } = require('../middleware/authorization');
-
+const pagination = require('../middleware/pagination');
+const Question = require('../model/questions');
 // # Question Papers
 // GET /v1/organizations/:orgId/question-papers
 // GET /v1/organizations/:orgId/question-papers/:paperId
@@ -11,6 +16,6 @@ const { protect, authorize } = require('../middleware/authorization');
 
 const router = express.Router();
 router.post('/', protect, authorize(['CreateQuestion']), addQuestion);
-router.get('/:id', protect, authorize(['ReadQuestion']), getQuestion);
 router.get('/', protect, authorize(['ReadQuestion']), getQuestion);
+router.get('/queryQuestion', protect, authorize(['ReadQuestion']), queryQuestion);
 module.exports = router;

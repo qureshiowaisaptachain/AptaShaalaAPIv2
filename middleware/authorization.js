@@ -18,7 +18,7 @@ const roles = {
 
 const jwt = require('jsonwebtoken');
 const ErrorResolver = require('../utility/errorResolver');
-const user = require('../model/auth/super_org_user');
+const super_org_user = require('../model/auth/super_org_user');
 
 exports.protect = async (req, res, next) => {
   let token;
@@ -35,16 +35,14 @@ exports.protect = async (req, res, next) => {
   }
   let decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  const account = await user.findById(decoded.id);
-
-  if (account) {
-    req.user = account;
-    next();
-  }
+  const account = await super_org_user.findById(decoded.id);
 
   if (!account) {
-    throw new ErrorResolver('Unauthorize Access', 500);
+    throw new ErrorResolver('Unauthorize Access', 403);
   }
+
+  req.user = account;
+  next();
 };
 
 exports.authorize = (permission) => {
