@@ -5,7 +5,6 @@ const {
   queryQuestion,
 } = require('../controller/question');
 const { protect, authorize } = require('../middleware/authorization');
-const pagination = require('../middleware/pagination');
 const Question = require('../model/questions');
 // # Question Papers
 // GET /v1/organizations/:orgId/question-papers
