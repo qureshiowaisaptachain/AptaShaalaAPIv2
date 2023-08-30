@@ -2,7 +2,7 @@
 // set permission using admin from frontend only
 const mongoose = require('mongoose');
 
-const roleSchema = new mongoose.Schema({
+const rolePermissionSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -13,6 +13,5 @@ const roleSchema = new mongoose.Schema({
   },
 });
 
-const Role = mongoose.model('Role', roleSchema);
-
-module.exports = Role
+const Role = mongoose.model('RolePermission', rolePermissionSchema);
+module.exports = Role;
