@@ -42,7 +42,7 @@ exports.getQuestion = asyncHandler(async (req, res, next) => {
     statusCode: '200',
   });
 });
-// related_exam is course_tag as per himal
+
 exports.queryQuestion = asyncHandler(async (req, res, next) => {
   const {
     id,
@@ -55,23 +55,14 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     create_date,
   } = req.query;
 
-  var query={};
-  console.log(
-    status,
-    topic,
-    chapter,
-    subject,
-    difficulty,
-    course_tag,
-    create_date
-  );
-  if (id) query._id =  id ;
-  if (subject) query.subject =  subject ;
-  if (chapter) query.chapter = chapter ;
-  if (topic) query.topic =  topic ;
-  if (status) query.status =  status ;
-  if (difficulty) query.difficulty =  difficulty ;
-  if (course_tag) query.course_tag =  course_tag ;
+  var query = {};
+  if (id) query._id = id;
+  if (subject) query.subject = subject;
+  if (chapter) query.chapter = chapter;
+  if (topic) query.topic = topic;
+  if (status) query.status = status;
+  if (difficulty) query.difficulty = difficulty;
+  if (course_tag) query.course_tag = course_tag;
 
   if (create_date) {
     query = { $gt: new Date(create_date) };
@@ -82,4 +73,32 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ message: 'Questions List', questions, statusCode: '200' });
+});
+
+exports.updateQuestion = asyncHandler(async (req, res, next) => {
+  const questionId = req.query['id'];
+  const updateData = req.body;
+
+  const updatedQuestion = await Question.findByIdAndUpdate(
+    { _id: questionId },
+    updateData
+  );
+
+  if (!updatedQuestion) {
+    throw new ErrorResolver('Question Not Found', 404);
+  }
+
+  res.status(200).json({ message: 'Questions List', updatedQuestion });
+});
+
+exports.deleteQuestion = asyncHandler(async (req, res, next) => {
+  const questionID = req.query['id'];
+
+  const deletedQuestion = await Question.findByIdAndDelete({_id:questionID});
+
+  if (!deletedQuestion) {
+    throw new ErrorResolver('Question Not Found', 404);
+  }
+
+  res.status(200).json({ message: 'Question deleted successfully' });
 });
