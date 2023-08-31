@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const organizationSchema = mongoose.Schema({
-  Schema_identifier: {
+  schema_identifier: {
+    type: String,
+    required: true,
+  },
+  sub_domain: {
     type: String,
     required: true,
   },

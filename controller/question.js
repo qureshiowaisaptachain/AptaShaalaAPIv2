@@ -42,15 +42,37 @@ exports.getQuestion = asyncHandler(async (req, res, next) => {
     statusCode: '200',
   });
 });
-
+// related_exam is course_tag as per himal
 exports.queryQuestion = asyncHandler(async (req, res, next) => {
-  const { id,status,topic, chapter, subject, create_date } = req.query;
-  var query;
-  if(id) query = {_id:id};
-  if (subject) query = {subject:subject};
-  if (chapter) query = {chapter:chapter};
-  if (topic) query = {topic:topic};
-  if (status) query = {status:status};
+  const {
+    id,
+    status,
+    topic,
+    chapter,
+    subject,
+    difficulty,
+    course_tag,
+    create_date,
+  } = req.query;
+
+  var query={};
+  console.log(
+    status,
+    topic,
+    chapter,
+    subject,
+    difficulty,
+    course_tag,
+    create_date
+  );
+  if (id) query._id =  id ;
+  if (subject) query.subject =  subject ;
+  if (chapter) query.chapter = chapter ;
+  if (topic) query.topic =  topic ;
+  if (status) query.status =  status ;
+  if (difficulty) query.difficulty =  difficulty ;
+  if (course_tag) query.course_tag =  course_tag ;
+
   if (create_date) {
     query = { $gt: new Date(create_date) };
   }
