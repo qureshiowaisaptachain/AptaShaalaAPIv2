@@ -52,7 +52,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     chapter,
     subject,
     difficulty,
-    course_tag,
+    courses_tag,
     create_date,
   } = req.query;
 
@@ -63,13 +63,13 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
   if (topic) query.topic = topic;
   if (status) query.status = status;
   if (difficulty) query.difficulty = difficulty;
-  if (course_tag) query.course_tag = course_tag;
+  if (courses_tag) query.courses_tag = courses_tag;
 
   if (create_date) {
     query = { $gt: new Date(create_date) };
   }
 
-  const questions = await Question.find(query).populate('topic').populate('chapter').populate('subject').populate('created_by');
+  const questions = await Question.find(query).populate('topic').populate('chapter').populate('subject').populate('created_by').populate(['courses_tags']);
 
   res
     .status(200)

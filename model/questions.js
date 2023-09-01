@@ -46,7 +46,7 @@ const questionSchema = mongoose.Schema({
     default: Date.now,
   },
   //filter
-  course_tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'course' }],
+  courses_tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
 });
 
 // above approve date is and approve by data is placeholder
