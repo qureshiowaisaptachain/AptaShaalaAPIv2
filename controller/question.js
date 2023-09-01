@@ -69,7 +69,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     query = { $gt: new Date(create_date) };
   }
 
-  const questions = await Question.find(query).populate('topic').populate('chapter').populate('subject').populate('created_by').populate(['courses_tags']);
+  const questions = await Question.find(query).populate('topic').populate('chapter').populate('subject').populate('created_by').populate('courses_tags');
 
   res
     .status(200)
