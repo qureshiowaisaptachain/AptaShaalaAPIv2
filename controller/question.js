@@ -3,6 +3,7 @@ const Question = require('../model/questions');
 const ErrorResolver = require('../utility/errorResolver');
 
 exports.addQuestion = asyncHandler(async (req, res, next) => {
+  
   req.body['created_by'] = req.userID;
   req.body['approved_by'] = req.userID; // place holder data only
   const newQuestions = await Question.create(req.body);
@@ -19,7 +20,7 @@ exports.addQuestion = asyncHandler(async (req, res, next) => {
 exports.getQuestion = asyncHandler(async (req, res, next) => {
   const questionID = req.query['id'];
   var question;
-  // return all question if id is not available
+
   if (!questionID) {
     question = await Question.find({});
     if (!question) {

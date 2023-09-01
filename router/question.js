@@ -17,12 +17,7 @@ router.get(
   authorize(['ReadQuestion']),
   queryQuestion
 );
-router.put('/update', protect, authorize(['UpdateQuestion']), updateQuestion);
-router.delete(
-  '/delete',
-  protect,
-  authorize(['DeleteQuestion']),
-  deleteQuestion
-);
+router.put('/', protect, authorize(['UpdateQuestion']), updateQuestion);
+router.delete('/', protect, authorize(['DeleteQuestion']), deleteQuestion);
 
 module.exports = router;

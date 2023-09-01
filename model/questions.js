@@ -16,7 +16,7 @@ const questionSchema = mongoose.Schema({
   //filter
   status: {
     type: String,
-    enum: ['Approved', 'Rejected', 'Awaited'],
+    enum: ['approved', 'rejected', 'awaited'],
     required: [true],
   },
   //filter
