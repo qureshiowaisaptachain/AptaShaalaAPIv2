@@ -16,8 +16,8 @@ exports.login = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Password missing', 400);
   }
   const account = await super_org_user
-    .findOne({
-      email: email_id,
+  .findOne({
+      email_id: email_id,
     })
     .select('+password');
 
@@ -32,14 +32,12 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   const token = createToken(account);
-  res
-    .status(200)
-    .json({
-      succsess: true,
-      token,
-      statusCode: 200,
-      message: 'User Login Succsessfully',
-    });
+  res.status(200).json({
+    succsess: true,
+    token,
+    statusCode: 200,
+    message: 'User Login Succsessfully',
+  });
 });
 
 exports.register = asyncHandler(async (req, res, next) => {
@@ -235,6 +233,7 @@ exports.passwordResetForDev = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     statusCode: 200,
     succsess: true,
+    updatePassword,
     message: 'Password is updated',
   });
 });
