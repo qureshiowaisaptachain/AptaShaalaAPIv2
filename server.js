@@ -9,7 +9,6 @@ var course = require('./router/course');
 var subject = require('./router/subject');
 var errorHandler = require('./middleware/error');
 var cors = require('cors');
-const { getSubjects } = require('./controller/subject');
 require('dotenv').config();
 
 console.log('Connecting DB...');
