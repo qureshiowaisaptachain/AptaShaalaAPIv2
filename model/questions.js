@@ -22,7 +22,7 @@ const questionSchema = mongoose.Schema({
   //filter
   difficulty: {
     type: Number,
-    enum: [1, 2, 3],
+    enum: [0, 1, 2],
     required: [true],
   },
   //filter
