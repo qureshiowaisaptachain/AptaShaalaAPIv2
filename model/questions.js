@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const { subject, topic, chapter } = require('../model/subjects');
 const questionSchema = mongoose.Schema({
   question: {
     type: String,
