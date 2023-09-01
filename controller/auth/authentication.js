@@ -1,8 +1,3 @@
-// all and any kind of changes for data in only controller
-
-/* below add any todo that need to be done 
- > add validation of req body
-*/
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const super_org_user = require('../../model/auth/super_org_user');
@@ -37,12 +32,14 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   const token = createToken(account);
-  res.status(200).json({
-    succsess: true,
-    token,
-    statusCode: 200,
-    message: 'User Login Succsessfully',
-  });
+  res
+    .status(200)
+    .json({
+      succsess: true,
+      token,
+      statusCode: 200,
+      message: 'User Login Succsessfully',
+    });
 });
 
 exports.register = asyncHandler(async (req, res, next) => {
