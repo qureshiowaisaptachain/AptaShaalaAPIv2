@@ -3,7 +3,6 @@ const Question = require('../model/questions');
 const ErrorResolver = require('../utility/errorResolver');
 
 exports.addQuestion = asyncHandler(async (req, res, next) => {
-  
   req.body['created_by'] = req.userID;
   req.body['approved_by'] = req.userID; // place holder data only
   const newQuestions = await Question.create(req.body);
@@ -69,11 +68,23 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     query = { $gt: new Date(create_date) };
   }
 
-  const questions = await Question.find(query).populate('topic').populate('chapter').populate('subject').populate('created_by').populate('courses_tags');
+  const limit = req.paginationData.curr.limit;
+  const page = req.paginationData.curr.page;
+  const questions = await Question.find(query)
+    .populate('topic')
+    .populate('chapter')
+    .populate('subject')
+    .populate('created_by')
+    .populate('courses_tags')
+    .limit(limit)
+    .skip(limit * page);
 
-  res
-    .status(200)
-    .json({ message: 'Questions List', questions, statusCode: '200' });
+  res.status(200).json({
+    message: 'Questions List',
+    questions,
+    paginationData: req.paginationData,
+    statusCode: '200',
+  });
 });
 
 exports.updateQuestion = asyncHandler(async (req, res, next) => {
@@ -95,7 +106,7 @@ exports.updateQuestion = asyncHandler(async (req, res, next) => {
 exports.deleteQuestion = asyncHandler(async (req, res, next) => {
   const questionID = req.query['id'];
 
-  const deletedQuestion = await Question.findByIdAndDelete({_id:questionID});
+  const deletedQuestion = await Question.findByIdAndDelete({ _id: questionID });
 
   if (!deletedQuestion) {
     throw new ErrorResolver('Question Not Found', 404);
