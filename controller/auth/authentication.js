@@ -16,7 +16,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Password missing', 400);
   }
   const account = await super_org_user
-  .findOne({
+    .findOne({
       email_id: email_id,
     })
     .select('+password');

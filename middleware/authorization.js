@@ -19,8 +19,9 @@ const roles = {
 const jwt = require('jsonwebtoken');
 const ErrorResolver = require('../utility/errorResolver');
 const super_org_user = require('../model/auth/super_org_user');
+const asyncHandler = require('./asynHandler');
 
-exports.protect = async (req, res, next) => {
+exports.protect = asyncHandler(async (req, res, next) => {
   let token;
 
   if (
@@ -36,7 +37,7 @@ exports.protect = async (req, res, next) => {
 
   // refresh token and logout
   let decoded = jwt.verify(token, process.env.JWT_SECRET);
-   
+
   const account = await super_org_user.findById(decoded.id);
 
   if (!account) {
@@ -45,10 +46,10 @@ exports.protect = async (req, res, next) => {
 
   req.user = account;
   next();
-};
+});
 
 exports.authorize = (permission) => {
-  return (req, res, next) => {
+  return asyncHandler(async (req, res, next) => {
     var token = false;
     if (
       req.headers.authorization &&
@@ -77,5 +78,5 @@ exports.authorize = (permission) => {
     } else {
       return next(new ErrorResolver('Unauthorize Access', 401));
     }
-  };
+  });
 };

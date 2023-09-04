@@ -69,7 +69,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
   }
 
   const limit = req.paginationData.curr.limit;
-  const page = req.paginationData.curr.page;
+  const page = !req.paginationData.curr.page ? 1 : req.paginationData.curr.page;
   const questions = await Question.find(query)
     .populate('topic')
     .populate('chapter')
