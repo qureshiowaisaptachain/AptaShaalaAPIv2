@@ -68,16 +68,16 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     query = { $gt: new Date(create_date) };
   }
 
-  const limit = req?.paginationData?.curr?.limit;
-  const page = req?.paginationData?.curr?.page;
+  // const limit = req?.paginationData?.curr?.limit;
+  // const page = req?.paginationData?.curr?.page;
+  
   const questions = await Question.find(query)
     .populate('topic')
     .populate('chapter')
     .populate('subject')
     .populate('created_by')
     .populate('courses_tags')
-    .limit(limit)
-    .skip(limit * page);
+  
 
   res.status(200).json({
     message: 'Questions List',
