@@ -33,8 +33,10 @@ exports.protect = async (req, res, next) => {
   if (!token) {
     throw new ErrorResolver(`Unauthorize Access`, 403);
   }
-  let decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+  // refresh token and logout
+  let decoded = jwt.verify(token, process.env.JWT_SECRET);
+   
   const account = await super_org_user.findById(decoded.id);
 
   if (!account) {
@@ -69,7 +71,7 @@ exports.authorize = (permission) => {
       accountPermission.push(roles[role]);
     });
 
-    if (accountPermission[0].includes(permission[0])) {
+    if (accountPermission[0]?.includes(permission[0])) {
       req.userID = decoded.id;
       return next();
     } else {
