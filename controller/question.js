@@ -68,8 +68,8 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     query = { $gt: new Date(create_date) };
   }
 
-  const limit = req.paginationData.curr.limit;
-  const page = req.paginationData.curr.page;
+  const limit = req?.paginationData?.curr?.limit;
+  const page = req?.paginationData?.curr?.page;
   const questions = await Question.find(query)
     .populate('topic')
     .populate('chapter')
