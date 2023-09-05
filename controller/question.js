@@ -72,25 +72,79 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     create_date,
   } = req.query;
 
-  var query = {};
-  if (id) query._id = id;
-  if (subject) query.subject = subject;
-  if (chapter) query.chapter = chapter;
-  if (topic) query.topic = topic;
-  if (status) query.status = status;
-  if (difficulty) query.difficulty = difficulty;
-  if (courses_tag) query.courses_tag = courses_tag;
+  const pipeline = [];
 
-  if (create_date) {
-    query = { $gt: new Date(create_date) };
+  // Match stage to filter documents based on query parameters
+  const matchStage = {
+    $match: {
+      $or: [
+        id ? { _id: { $in: id.map(id => mongoose.Types.ObjectId(id)) } } : {},
+        status ? { status: { $in: Array.isArray(status) ? status : [status] } } : {},
+        topic ? { topic: { $in: Array.isArray(topic) ? topic : [topic] } } : {},
+        chapter ? { chapter: { $in: Array.isArray(chapter) ? chapter : [chapter] } } : {},
+        subject ? { subject: { $in: Array.isArray(subject) ? subject : [subject] } } : {},
+        difficulty ? { difficulty: { $in: Array.isArray(difficulty) ? difficulty : [difficulty] } } : {},
+        courses_tag ? { courses_tag: { $in: Array.isArray(courses_tag) ? courses_tag : [courses_tag] } } : {},
+        create_date ? { create_date: { $gt: new Date(create_date) } } : {},
+      ],
+    },
+  };
+  pipeline.push(matchStage);
+
+  const lookupStages = [];
+
+  if (topic) {
+    lookupStages.push({
+      $lookup: {
+        from: 'topics',
+        localField: 'topic',
+        foreignField: '_id',
+        as: 'topic',
+      },
+    });
   }
 
-  const questions = await Question.find(query)
-    .populate('topic')
-    .populate('chapter')
-    .populate('subject')
-    .populate('created_by')
-    .populate('courses_tags');
+  if (chapter) {
+    lookupStages.push({
+      $lookup: {
+        from: 'chapters',
+        localField: 'chapter',
+        foreignField: '_id',
+        as: 'chapter',
+      },
+    });
+  }
+
+  if (subject) {
+    lookupStages.push({
+      $lookup: {
+        from: 'subjects',
+        localField: 'subject',
+        foreignField: '_id',
+        as: 'subject',
+      },
+    });
+  }
+
+  if (courses_tag) {
+    lookupStages.push({
+      $lookup: {
+        from: 'coursestags',
+        localField: 'courses_tags',
+        foreignField: '_id',
+        as: 'courses_tags',
+      },
+    });
+  }
+
+  // Add dynamic lookup stages to the pipeline
+  pipeline.push(...lookupStages);
+
+  const questions = await Question.aggregate(pipeline);
+
+  if (!questions) {
+    throw new ErrorResolver('Question List Cant Retrived', 500);
+  }
 
   res.status(200).json({
     success: true,
@@ -99,6 +153,46 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     statusCode: '200',
   });
 });
+
+// exports.queryQuestion = asyncHandler(async (req, res, next) => {
+//   const {
+//     id,
+//     status,
+//     topic,
+//     chapter,
+//     subject,
+//     difficulty,
+//     courses_tag,
+//     create_date,
+//   } = req.query;
+
+//   var query = {};
+//   if (id) query._id = id;
+//   if (subject) query.subject = subject;
+//   if (chapter) query.chapter = chapter;
+//   if (topic) query.topic = topic;
+//   if (status) query.status = status;
+//   if (difficulty) query.difficulty = difficulty;
+//   if (courses_tag) query.courses_tag = courses_tag;
+
+//   if (create_date) {
+//     query = { $gt: new Date(create_date) };
+//   }
+
+//   const questions = await Question.find(query)
+//     .populate('topic')
+//     .populate('chapter')
+//     .populate('subject')
+//     .populate('created_by')
+//     .populate('courses_tags');
+
+//   res.status(200).json({
+//     success: true,
+//     message: 'Questions List',
+//     questions,
+//     statusCode: '200',
+//   });
+// });
 
 exports.textSearch = asyncHandler(async (req, res, next) => {
   const { textToSearch } = req.body;
