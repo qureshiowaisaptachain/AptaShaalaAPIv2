@@ -23,5 +23,5 @@ router.get(
 );
 router.put('/', protect, authorize(['UpdateQuestion']), updateQuestion);
 router.delete('/', protect, authorize(['DeleteQuestion']), deleteQuestion);
-router.get('/search', protect, authorize(['ReadQuestion']), textSearch);
+router.post('/search', protect, authorize(['ReadQuestion']), textSearch);
 module.exports = router;
