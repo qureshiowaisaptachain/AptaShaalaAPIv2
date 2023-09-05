@@ -4,6 +4,7 @@ const {
   queryQuestion,
   updateQuestion,
   deleteQuestion,
+  textSearch,
   paginationQueryQuestion,
 } = require('../controller/question');
 const { pagination } = require('../middleware/pagination');
@@ -14,7 +15,7 @@ const router = express.Router();
 router.post('/', protect, authorize(['CreateQuestion']), addQuestion);
 router.get('/', protect, authorize(['ReadQuestion']), queryQuestion);
 router.get(
-  '/pagination',
+  '/staging',
   pagination(Question),
   protect,
   authorize(['ReadQuestion']),
@@ -22,5 +23,5 @@ router.get(
 );
 router.put('/', protect, authorize(['UpdateQuestion']), updateQuestion);
 router.delete('/', protect, authorize(['DeleteQuestion']), deleteQuestion);
-
+router.get('/search', protect, authorize(['ReadQuestion']), textSearch);
 module.exports = router;

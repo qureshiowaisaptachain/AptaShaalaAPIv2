@@ -100,6 +100,31 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.textSearch = asyncHandler(async (req, res, next) => {
+  const { textToSearch } = req.body;
+  let IsQuestionFound = false;
+  IsQuestionFound = await Question.find({
+    $text: { $search: textToSearch },
+  }).count();
+
+  if (IsQuestionFound > 1) {
+    res.status(200).json({
+      success: true,
+      message: 'One Or More Question Found',
+      IsQuestionFound: true,
+      count:IsQuestionFound,
+      statusCode: '200',
+    });
+  } else {
+    res.status(200).json({
+      success: true,
+      IsQuestionFound: false,
+      message: 'Question Not Found',
+      statusCode: '200',
+    });
+  }
+});
+
 exports.updateQuestion = asyncHandler(async (req, res, next) => {
   const questionId = req.query['id'];
   const updateData = req.body;
@@ -113,13 +138,11 @@ exports.updateQuestion = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Question Not Found', 404);
   }
 
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: 'Question Updated successfully',
-      updatedQuestion,
-    });
+  res.status(200).json({
+    success: true,
+    message: 'Question Updated successfully',
+    updatedQuestion,
+  });
 });
 
 exports.deleteQuestion = asyncHandler(async (req, res, next) => {
