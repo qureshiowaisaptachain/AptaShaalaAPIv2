@@ -11,34 +11,51 @@ exports.addQuestion = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Question Not Added Try Again', 500);
   }
 
-  res
-    .status(200)
-    .json({ message: 'New Question Added', newQuestions, statusCode: '201' });
+  res.status(200).json({
+    success: true,
+    message: 'Question Added Successfully',
+    newQuestions,
+    statusCode: '201',
+  });
 });
 
-exports.getQuestion = asyncHandler(async (req, res, next) => {
-  const questionID = req.query['id'];
-  var question;
+exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
+  const {
+    id,
+    status,
+    topic,
+    chapter,
+    subject,
+    difficulty,
+    courses_tag,
+    create_date,
+  } = req.query;
 
-  if (!questionID) {
-    question = await Question.find({});
-    if (!question) {
-      throw new ErrorResolver('Cant Find Questions List', 404);
-    }
-    return res.status(200).json({
-      message: 'Questions List',
-      question,
-      statusCode: '200',
-    });
+  var query = {};
+  if (id) query._id = id;
+  if (subject) query.subject = subject;
+  if (chapter) query.chapter = chapter;
+  if (topic) query.topic = topic;
+  if (status) query.status = status;
+  if (difficulty) query.difficulty = difficulty;
+  if (courses_tag) query.courses_tag = courses_tag;
+
+  if (create_date) {
+    query = { $gt: new Date(create_date) };
   }
 
-  question = await Question.find({ _id: questionID });
-  if (!question) {
-    throw new ErrorResolver('Cant Find Question ', 404);
-  }
+  const questions = await Question.find(query)
+    .populate('topic')
+    .populate('chapter')
+    .populate('subject')
+    .populate('created_by')
+    .populate('courses_tags');
+
   res.status(200).json({
+    success: true,
+    paginationData: req.paginationData,
     message: 'Questions List',
-    question,
+    questions,
     statusCode: '200',
   });
 });
@@ -68,21 +85,17 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
     query = { $gt: new Date(create_date) };
   }
 
-  // const limit = req?.paginationData?.curr?.limit;
-  // const page = req?.paginationData?.curr?.page;
-  
   const questions = await Question.find(query)
     .populate('topic')
     .populate('chapter')
     .populate('subject')
     .populate('created_by')
-    .populate('courses_tags')
-  
+    .populate('courses_tags');
 
   res.status(200).json({
+    success: true,
     message: 'Questions List',
     questions,
-    paginationData: req.paginationData,
     statusCode: '200',
   });
 });
@@ -100,7 +113,13 @@ exports.updateQuestion = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Question Not Found', 404);
   }
 
-  res.status(200).json({ message: 'Questions List', updatedQuestion });
+  res
+    .status(200)
+    .json({
+      success: true,
+      message: 'Question Updated successfully',
+      updatedQuestion,
+    });
 });
 
 exports.deleteQuestion = asyncHandler(async (req, res, next) => {
@@ -112,5 +131,7 @@ exports.deleteQuestion = asyncHandler(async (req, res, next) => {
     throw new ErrorResolver('Question Not Found', 404);
   }
 
-  res.status(200).json({ message: 'Question deleted successfully' });
+  res
+    .status(200)
+    .json({ success: true, message: 'Question deleted successfully' });
 });
