@@ -107,12 +107,11 @@ exports.textSearch = asyncHandler(async (req, res, next) => {
     $text: { $search: textToSearch },
   }).count();
 
-  if (IsQuestionFound > 1) {
+  if (IsQuestionFound > 0) {
     res.status(200).json({
       success: true,
-      message: 'One Or More Question Found',
+      message: `${IsQuestionFound} Questions Found`,
       IsQuestionFound: true,
-      count:IsQuestionFound,
       statusCode: '200',
     });
   } else {
