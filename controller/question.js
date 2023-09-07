@@ -19,7 +19,8 @@ exports.addQuestion = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
+// working frontend test
+exports.queryQuestion = asyncHandler(async (req, res, next) => {
   const {
     id,
     status,
@@ -60,7 +61,7 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.queryQuestion = asyncHandler(async (req, res, next) => {
+exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
   const {
     id,
     status,
@@ -73,16 +74,15 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
   } = req.query;
 
   const pipeline = [];
-
-  // Match stage to filter documents based on query parameters
+   
   const matchStage = {
     $match: {
-      $or: [
-        id ? { _id: { $in: id.map(id => mongoose.Types.ObjectId(id)) } } : {},
+      $and: [
+        id ? { _id: { $in: id.split(",").map(id => new mongoose.Types.ObjectId(id)) } } : {},
         status ? { status: { $in: Array.isArray(status) ? status : [status] } } : {},
         topic ? { topic: { $in: Array.isArray(topic) ? topic : [topic] } } : {},
         chapter ? { chapter: { $in: Array.isArray(chapter) ? chapter : [chapter] } } : {},
-        subject ? { subject: { $in: Array.isArray(subject) ? subject : [subject] } } : {},
+        subject ? { subject: { $in: subject.split(",").map(subject => new mongoose.Types.ObjectId(subject)) } } : {},
         difficulty ? { difficulty: { $in: Array.isArray(difficulty) ? difficulty : [difficulty] } } : {},
         courses_tag ? { courses_tag: { $in: Array.isArray(courses_tag) ? courses_tag : [courses_tag] } } : {},
         create_date ? { create_date: { $gt: new Date(create_date) } } : {},
@@ -93,7 +93,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
 
   const lookupStages = [];
 
-  if (topic) {
+  
     lookupStages.push({
       $lookup: {
         from: 'topics',
@@ -102,9 +102,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
         as: 'topic',
       },
     });
-  }
-
-  if (chapter) {
+  
     lookupStages.push({
       $lookup: {
         from: 'chapters',
@@ -113,9 +111,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
         as: 'chapter',
       },
     });
-  }
-
-  if (subject) {
+  
     lookupStages.push({
       $lookup: {
         from: 'subjects',
@@ -124,9 +120,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
         as: 'subject',
       },
     });
-  }
-
-  if (courses_tag) {
+  
     lookupStages.push({
       $lookup: {
         from: 'coursestags',
@@ -135,7 +129,7 @@ exports.queryQuestion = asyncHandler(async (req, res, next) => {
         as: 'courses_tags',
       },
     });
-  }
+ 
 
   // Add dynamic lookup stages to the pipeline
   pipeline.push(...lookupStages);

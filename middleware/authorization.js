@@ -7,6 +7,7 @@ const roles = {
     'DeleteQuestion',
     'CreateCourse',
     'getSubject',
+    'uploadImage'
   ],
   questionCreator: [
     'ReadQuestion',

@@ -14,13 +14,13 @@ const { protect, authorize } = require('../middleware/authorization');
 const router = express.Router();
 router.post('/', protect, authorize(['CreateQuestion']), addQuestion);
 router.get('/', protect, authorize(['ReadQuestion']), queryQuestion);
-router.get(
-  '/staging',
-  pagination(Question),
-  protect,
-  authorize(['ReadQuestion']),
-  paginationQueryQuestion
-);
+// router.get(
+//   '/staging',
+//   pagination(Question),
+//   protect,
+//   authorize(['ReadQuestion']),
+//   paginationQueryQuestion
+// );
 router.put('/', protect, authorize(['UpdateQuestion']), updateQuestion);
 router.delete('/', protect, authorize(['DeleteQuestion']), deleteQuestion);
 router.post('/search', protect, authorize(['ReadQuestion']), textSearch);
