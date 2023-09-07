@@ -1,7 +1,7 @@
 const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
-  keyFilename: `${__dirname}\\${process.env.ServiceAccountFileName}`,
+  keyFilename: `${__dirname}/ServiceAccount.json`,
 });
 console.log(__dirname);
 const bucketName = process.env.GoogleBucketName;
