@@ -84,7 +84,7 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
         chapter ? { chapter: { $in: chapter.split(',').map((chapter) =>  new mongoose.Types.ObjectId(chapter))} } : {},
         subject ? { subject: { $in: subject.split(',').map((subject) => new mongoose.Types.ObjectId(subject)) } } : {},
         difficulty ? { difficulty: {  $in: difficulty.split(',').map((difficulty) =>  parseInt(difficulty)) } }: {},
-        courses_tag ? { courses_tag: { $in: subject.split(',').map((courses_tag) => new mongoose.Types.ObjectId(courses_tag)) } } : {},
+        courses_tag ? { courses_tag: { $in: courses_tag.split(',').map((courses_tag) => new mongoose.Types.ObjectId(courses_tag)) } } : {},
         create_date ? { create_date: { $gt: new Date(create_date) } } : {},
       ],
     },
@@ -125,7 +125,7 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
       from: 'courses',
       localField: 'courses_tags',
       foreignField: '_id',
-      as: 'course',
+      as: 'courses_tags',
     },
   });
 
