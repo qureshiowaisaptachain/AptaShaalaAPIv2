@@ -93,48 +93,12 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
 
   const lookupStages = [];
 
-  // lookupStages.push({
-  //   $lookup: {
-  //     from: 'topics',
-  //     localField: 'topic',
-  //     foreignField: '_id',
-  //     as: 'topic',
-  //   },
-  // });
-
-  // lookupStages.push({
-  //   $lookup: {
-  //     from: 'chapters',
-  //     localField: 'chapter',
-  //     foreignField: '_id',
-  //     as: 'chapter',
-  //   },
-  // });
-
-  // lookupStages.push({
-  //   $lookup: {
-  //     from: 'subjects',
-  //     localField: 'subject',
-  //     foreignField: '_id',
-  //     as: 'subject',
-  //   },
-  // });
-
-  // lookupStages.push({
-  //   $lookup: {
-  //     from: 'courses',
-  //     localField: 'courses_tags',
-  //     foreignField: '_id',
-  //     as: 'courses_tags',
-  //   },
-  // });
-
   lookupStages.push({
     $lookup: {
       from: 'topics',
       localField: 'topic',
       foreignField: '_id',
-      as: 'topicSingle' // Use a different name for the single document
+      as: 'topicSingle'
     }
   });
   
@@ -143,7 +107,7 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
       from: 'chapters',
       localField: 'chapter',
       foreignField: '_id',
-      as: 'chapterSingle' // Use a different name for the single document
+      as: 'chapterSingle'
     }
   });
   
@@ -152,7 +116,7 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
       from: 'subjects',
       localField: 'subject',
       foreignField: '_id',
-      as: 'subjectSingle' // Use a different name for the single document
+      as: 'subjectSingle'
     }
   });
   
@@ -161,9 +125,21 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
       from: 'courses',
       localField: 'courses_tags',
       foreignField: '_id',
-      as: 'coursesTagsSingle' // Use a different name for the single document
+      as: 'coursesTagsSingle'
     }
   });
+  
+  // Unwind the arrays before using $arrayElemAt
+  lookupStages.push({ $unwind: '$topicSingle' });
+  lookupStages.push({ $unwind: '$chapterSingle' });
+  lookupStages.push({ $unwind: '$subjectSingle' });
+  lookupStages.push({ $unwind: '$coursesTagsSingle' });
+  
+  // Extract the first element from each array
+  lookupStages.push({ $addFields: { topicSingle: '$topicSingle' } });
+  lookupStages.push({ $addFields: { chapterSingle: '$chapterSingle' } });
+  lookupStages.push({ $addFields: { subjectSingle: '$subjectSingle' } });
+  lookupStages.push({ $addFields: { coursesTagsSingle: '$coursesTagsSingle' } });
   
 
   // Add dynamic lookup stages to the pipeline
