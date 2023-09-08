@@ -93,41 +93,78 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
 
   const lookupStages = [];
 
+  // lookupStages.push({
+  //   $lookup: {
+  //     from: 'topics',
+  //     localField: 'topic',
+  //     foreignField: '_id',
+  //     as: 'topic',
+  //   },
+  // });
+
+  // lookupStages.push({
+  //   $lookup: {
+  //     from: 'chapters',
+  //     localField: 'chapter',
+  //     foreignField: '_id',
+  //     as: 'chapter',
+  //   },
+  // });
+
+  // lookupStages.push({
+  //   $lookup: {
+  //     from: 'subjects',
+  //     localField: 'subject',
+  //     foreignField: '_id',
+  //     as: 'subject',
+  //   },
+  // });
+
+  // lookupStages.push({
+  //   $lookup: {
+  //     from: 'courses',
+  //     localField: 'courses_tags',
+  //     foreignField: '_id',
+  //     as: 'courses_tags',
+  //   },
+  // });
+
   lookupStages.push({
     $lookup: {
       from: 'topics',
       localField: 'topic',
       foreignField: '_id',
-      as: 'topic',
-    },
+      as: 'topicSingle' // Use a different name for the single document
+    }
   });
-
+  
   lookupStages.push({
     $lookup: {
       from: 'chapters',
       localField: 'chapter',
       foreignField: '_id',
-      as: 'chapter',
-    },
+      as: 'chapterSingle' // Use a different name for the single document
+    }
   });
-
+  
   lookupStages.push({
     $lookup: {
       from: 'subjects',
       localField: 'subject',
       foreignField: '_id',
-      as: 'subject',
-    },
+      as: 'subjectSingle' // Use a different name for the single document
+    }
   });
-
+  
   lookupStages.push({
     $lookup: {
       from: 'courses',
       localField: 'courses_tags',
       foreignField: '_id',
-      as: 'courses_tags',
-    },
+      as: 'coursesTagsSingle' // Use a different name for the single document
+    }
   });
+  
 
   // Add dynamic lookup stages to the pipeline
   pipeline.push(...lookupStages);
