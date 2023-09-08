@@ -1,7 +1,7 @@
 const asyncHandler = require('../middleware/asynHandler');
 const Question = require('../model/questions');
 const ErrorResolver = require('../utility/errorResolver');
-
+const mongoose = require('mongoose');
 exports.addQuestion = asyncHandler(async (req, res, next) => {
   req.body['created_by'] = req.userID;
   req.body['approved_by'] = req.userID; // place holder data only
@@ -74,17 +74,17 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
   } = req.query;
 
   const pipeline = [];
-   
+
   const matchStage = {
     $match: {
-      $and: [
-        id ? { _id: { $in: id.split(",").map(id => new mongoose.Types.ObjectId(id)) } } : {},
-        status ? { status: { $in: Array.isArray(status) ? status : [status] } } : {},
-        topic ? { topic: { $in: Array.isArray(topic) ? topic : [topic] } } : {},
-        chapter ? { chapter: { $in: Array.isArray(chapter) ? chapter : [chapter] } } : {},
-        subject ? { subject: { $in: subject.split(",").map(subject => new mongoose.Types.ObjectId(subject)) } } : {},
-        difficulty ? { difficulty: { $in: Array.isArray(difficulty) ? difficulty : [difficulty] } } : {},
-        courses_tag ? { courses_tag: { $in: Array.isArray(courses_tag) ? courses_tag : [courses_tag] } } : {},
+      $and: [ 
+        id ? { _id: { $in: id.split(',').map((id) => new mongoose.Types.ObjectId(id)) } }: {},
+        status ? { status: { $in: status.split(',').map((status) =>  status) } } : {},
+        topic ? { topic: { $in:  topic.split(',').map((topic) =>  new mongoose.Types.ObjectId(topic))  } } : {},
+        chapter ? { chapter: { $in: chapter.split(',').map((chapter) =>  new mongoose.Types.ObjectId(chapter))} } : {},
+        subject ? { subject: { $in: subject.split(',').map((subject) => new mongoose.Types.ObjectId(subject)) } } : {},
+        difficulty ? { difficulty: {  $in: difficulty.split(',').map((difficulty) =>  new Number(difficulty)) } }: {},
+        courses_tag ? { courses_tag: { $in: subject.split(',').map((courses_tag) => new mongoose.Types.ObjectId(courses_tag)) } } : {},
         create_date ? { create_date: { $gt: new Date(create_date) } } : {},
       ],
     },
@@ -93,43 +93,41 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
 
   const lookupStages = [];
 
-  
-    lookupStages.push({
-      $lookup: {
-        from: 'topics',
-        localField: 'topic',
-        foreignField: '_id',
-        as: 'topic',
-      },
-    });
-  
-    lookupStages.push({
-      $lookup: {
-        from: 'chapters',
-        localField: 'chapter',
-        foreignField: '_id',
-        as: 'chapter',
-      },
-    });
-  
-    lookupStages.push({
-      $lookup: {
-        from: 'subjects',
-        localField: 'subject',
-        foreignField: '_id',
-        as: 'subject',
-      },
-    });
-  
-    lookupStages.push({
-      $lookup: {
-        from: 'coursestags',
-        localField: 'courses_tags',
-        foreignField: '_id',
-        as: 'courses_tags',
-      },
-    });
- 
+  lookupStages.push({
+    $lookup: {
+      from: 'topics',
+      localField: 'topic',
+      foreignField: '_id',
+      as: 'topic',
+    },
+  });
+
+  lookupStages.push({
+    $lookup: {
+      from: 'chapters',
+      localField: 'chapter',
+      foreignField: '_id',
+      as: 'chapter',
+    },
+  });
+
+  lookupStages.push({
+    $lookup: {
+      from: 'subjects',
+      localField: 'subject',
+      foreignField: '_id',
+      as: 'subject',
+    },
+  });
+
+  lookupStages.push({
+    $lookup: {
+      from: 'courses',
+      localField: 'courses_tags',
+      foreignField: '_id',
+      as: 'course',
+    },
+  });
 
   // Add dynamic lookup stages to the pipeline
   pipeline.push(...lookupStages);

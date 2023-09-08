@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var connectDB = require('./utility/connectDB');
-var PORT = Number(process.env.PORT) || 3001;
+var PORT = Number(process.env.PORT) || 3000;
 var authentication = require('./router/auth/authentication');
 var question = require('./router/question');
 var course = require('./router/course');
