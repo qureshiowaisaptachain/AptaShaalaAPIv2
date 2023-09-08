@@ -83,7 +83,7 @@ exports.paginationQueryQuestion = asyncHandler(async (req, res, next) => {
         topic ? { topic: { $in:  topic.split(',').map((topic) =>  new mongoose.Types.ObjectId(topic))  } } : {},
         chapter ? { chapter: { $in: chapter.split(',').map((chapter) =>  new mongoose.Types.ObjectId(chapter))} } : {},
         subject ? { subject: { $in: subject.split(',').map((subject) => new mongoose.Types.ObjectId(subject)) } } : {},
-        difficulty ? { difficulty: {  $in: difficulty.split(',').map((difficulty) =>  new Number(difficulty)) } }: {},
+        difficulty ? { difficulty: {  $in: difficulty.split(',').map((difficulty) =>  parseInt(difficulty)) } }: {},
         courses_tag ? { courses_tag: { $in: subject.split(',').map((courses_tag) => new mongoose.Types.ObjectId(courses_tag)) } } : {},
         create_date ? { create_date: { $gt: new Date(create_date) } } : {},
       ],
